@@ -43,6 +43,19 @@ Sounds are stored in `assets/sounds/` (or the equivalent inside the built app). 
 - **Vanilla JS** – No framework; HTML, CSS, and a small amount of JavaScript
 - **Custom `sound://` protocol** – Secure loading of audio from the app’s sound directory
 
+## Creating the GitHub repository
+
+1. On [GitHub](https://github.com/new), create a new repository named `SoundBoard` (or any name you prefer). Do **not** initialize with a README (this project already has one).
+2. In this folder, add the remote and push:
+
+   ```bash
+   git remote add origin https://github.com/YOUR_USERNAME/SoundBoard.git
+   git branch -M main
+   git push -u origin main
+   ```
+
+   Replace `YOUR_USERNAME` with your GitHub username. If you use SSH: `git@github.com:YOUR_USERNAME/SoundBoard.git`.
+
 ## License
 
 MIT
