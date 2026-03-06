@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; media-src 'self' sound:;">
+  <title>SoundBoard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="header">
+    <h1 class="title">SoundBoard</h1>
+    <p class="subtitle">Click a pad to play • Add your own sounds</p>
+    <div class="actions">
+      <button type="button" class="btn btn-primary" id="add-sounds">+ Add sounds</button>
+    </div>
+  </header>
+  <main class="main">
+    <div class="pads" id="pads"></div>
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">♪</div>
+      <p>No sounds yet</p>
+      <p class="empty-hint">Click “Add sounds” to import MP3, WAV, OGG, or M4A files</p>
+    </div>
+  </main>
+  <script src="renderer.js"></script>
+</body>
+</html>
