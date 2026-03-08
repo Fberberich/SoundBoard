@@ -99,9 +99,117 @@ body {
   background: rgba(232, 74, 90, 0.15);
 }
 
+.hidden {
+  display: none !important;
+}
+
+.settings-panel {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.settings-panel:not(.hidden) {
+  display: flex;
+}
+
+.settings-inner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  max-width: 420px;
+  width: 100%;
+}
+
+.settings-inner h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.settings-hint {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.settings-inner label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.settings-inner label span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.settings-inner select {
+  font: inherit;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+}
+
+.settings-note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.settings-inner #settings-apply {
+  width: 100%;
+}
+
 .main {
   padding: 1.75rem;
   min-height: calc(100vh - 100px);
+}
+
+.game-chat-help {
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.game-chat-help summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.game-chat-help p {
+  margin: 0.5rem 0 0;
+}
+
+.game-chat-help ol {
+  margin: 0.5rem 0 0 1.25rem;
+  padding: 0;
+}
+
+.game-chat-help li {
+  margin: 0.35rem 0;
+}
+
+.game-chat-help a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.game-chat-help a:hover {
+  text-decoration: underline;
 }
 
 .pads {

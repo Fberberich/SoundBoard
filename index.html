@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; media-src 'self' sound:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; media-src 'self' blob:;">
   <title>SoundBoard</title>
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -12,10 +12,41 @@
     <h1 class="title">SoundBoard</h1>
     <p class="subtitle">Click a pad to play • Add your own sounds</p>
     <div class="actions">
+      <button type="button" class="btn btn-ghost" id="btn-settings">Output</button>
       <button type="button" class="btn btn-primary" id="add-sounds">+ Add sounds</button>
     </div>
   </header>
+  <div class="settings-panel hidden" id="settings-panel">
+    <div class="settings-inner">
+      <h3>Audio output</h3>
+      <p class="settings-hint">Send soundboard to two devices so you and people in chat both hear it.</p>
+      <label>
+        <span>What I hear</span>
+        <select id="device-playback">
+          <option value="">Default device</option>
+        </select>
+      </label>
+      <label>
+        <span>What others hear (Discord / game chat)</span>
+        <select id="device-voice-chat">
+          <option value="">None</option>
+        </select>
+      </label>
+      <p class="settings-note">Set your game/Discord mic input to the same device you pick as “What others hear” (e.g. SteelSeries Sonar – Chat).</p>
+      <button type="button" class="btn btn-primary" id="settings-apply">Apply</button>
+    </div>
+  </div>
   <main class="main">
+    <details class="game-chat-help">
+      <summary>SteelSeries Sonar – use in game chat</summary>
+      <p>Route SoundBoard audio through Sonar so others hear it in voice chat:</p>
+      <ol>
+        <li>Open <strong>SteelSeries GG</strong> → Sonar mixer.</li>
+        <li>In the output panel, find <strong>SoundBoard</strong> (or <strong>Electron</strong> when running from dev). Drag it onto the <strong>Chat</strong> or <strong>Media</strong> channel.</li>
+        <li>Or use Windows: right‑click speaker icon → Sound settings → Advanced → <strong>App volume and device preferences</strong> → set SoundBoard’s output to <strong>SteelSeries Sonar – Game</strong> or <strong>Media</strong>.</li>
+      </ol>
+      <p>Sonar will mix SoundBoard into your Chat output, so your mic + soundboard are heard together in game.</p>
+    </details>
     <div class="pads" id="pads"></div>
     <div class="empty-state" id="empty-state">
       <div class="empty-icon">♪</div>

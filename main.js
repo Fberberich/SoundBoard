@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, protocol } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -28,25 +28,22 @@ function createWindow() {
   mainWindow.loadFile('index.html');
   mainWindow.once('ready-to-show', () => mainWindow.show());
   mainWindow.on('closed', () => { mainWindow = null; });
-}
 
-const MIME = { '.mp3': 'audio/mpeg', '.wav': 'audio/wav', '.ogg': 'audio/ogg', '.m4a': 'audio/mp4', '.aac': 'audio/aac', '.flac': 'audio/flac' };
+  if (process.env.DEBUG_SOUNDBOARD) {
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
+  }
+
+  // Open external links (e.g. VB-Cable, VoiceMeeter) in system browser
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      shell.openExternal(url);
+    }
+    return { action: 'deny' };
+  });
+}
 
 app.whenReady().then(() => {
   ensureSoundsDir();
-  protocol.handle('sound', (request) => {
-    const url = request.url.replace('sound://', '');
-    const filePath = path.join(SOUNDS_DIR, decodeURIComponent(url));
-    if (!path.resolve(filePath).startsWith(path.resolve(SOUNDS_DIR))) return new Response('Forbidden', { status: 403 });
-    try {
-      const ext = path.extname(filePath).toLowerCase();
-      const contentType = MIME[ext] || 'application/octet-stream';
-      const buffer = fs.readFileSync(filePath);
-      return new Response(buffer, { headers: { 'Content-Type': contentType } });
-    } catch (e) {
-      return new Response('Not found', { status: 404 });
-    }
-  });
   createWindow();
 });
 
@@ -84,6 +81,16 @@ ipcMain.handle('list-sounds', () => {
     /\.(mp3|wav|ogg|m4a|aac|flac)$/i.test(n)
   );
   return names;
+});
+
+// Fallback: load sound as ArrayBuffer for Blob URL playback (if protocol fails)
+ipcMain.handle('load-sound-buffer', (_, name) => {
+  const filePath = path.join(SOUNDS_DIR, name);
+  if (!path.resolve(filePath).startsWith(path.resolve(SOUNDS_DIR)) || !fs.existsSync(filePath)) {
+    return null;
+  }
+  const buf = fs.readFileSync(filePath);
+  return new Uint8Array(buf).buffer;
 });
 
 ipcMain.handle('remove-sound', (_, name) => {
