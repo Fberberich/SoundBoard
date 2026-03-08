@@ -19,6 +19,7 @@
   "build": {
     "appId": "com.soundboard.app",
     "productName": "SoundBoard",
+    "publish": null,
     "directories": {
       "output": "dist"
     },

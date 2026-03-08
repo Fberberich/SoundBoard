@@ -23,15 +23,13 @@ jobs:
         run: npm ci
 
       - name: Build Windows
-        run: npm run build:win
+        run: npx electron-builder --win --publish never
 
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
         with:
           name: SoundBoard-windows
-          path: |
-            dist/*.exe
-            dist/*.exe.blockmap
+          path: dist/*.exe
 
   build-linux:
     runs-on: ubuntu-latest
@@ -50,15 +48,14 @@ jobs:
       - name: Install Linux dependencies (for Electron)
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-0 libnotify-dev libnss3 libxss1 libasound2 libxtst6 xvfb
+          sudo apt-get install -y libgtk-3-0 libnotify-dev libnss3 libxss1 libxtst6 xvfb
+          sudo apt-get install -y libasound2 || sudo apt-get install -y libasound2t64 || true
 
       - name: Build Linux
-        run: npm run build:linux
+        run: npx electron-builder --linux --publish never
 
       - name: Upload Linux artifacts
         uses: actions/upload-artifact@v4
         with:
           name: SoundBoard-linux
-          path: |
-            dist/*.AppImage
-            dist/*.AppImage.blockmap
+          path: dist/*.AppImage
