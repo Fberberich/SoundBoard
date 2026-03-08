@@ -2,11 +2,17 @@ const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-const SOUNDS_DIR = path.join(__dirname, 'assets', 'sounds');
+// When packaged, __dirname is inside app.asar (read-only). Use userData for sounds.
+function getSoundsDir() {
+  return app.isPackaged
+    ? path.join(app.getPath('userData'), 'sounds')
+    : path.join(__dirname, 'assets', 'sounds');
+}
 let mainWindow;
 
 function ensureSoundsDir() {
-  if (!fs.existsSync(SOUNDS_DIR)) fs.mkdirSync(SOUNDS_DIR, { recursive: true });
+  const dir = getSoundsDir();
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
 
 function createWindow() {
@@ -25,7 +31,7 @@ function createWindow() {
     show: false,
   });
 
-  mainWindow.loadFile('index.html');
+  mainWindow.loadFile(path.join(__dirname, 'index.html'));
   mainWindow.once('ready-to-show', () => mainWindow.show());
   mainWindow.on('closed', () => { mainWindow = null; });
 
@@ -65,10 +71,11 @@ ipcMain.handle('choose-sound-files', async () => {
   });
   if (result.canceled) return [];
   ensureSoundsDir();
+  const soundsDir = getSoundsDir();
   const added = [];
   for (const src of result.filePaths) {
     const name = path.basename(src);
-    const dest = path.join(SOUNDS_DIR, name);
+    const dest = path.join(soundsDir, name);
     fs.copyFileSync(src, dest);
     added.push(name);
   }
@@ -77,16 +84,17 @@ ipcMain.handle('choose-sound-files', async () => {
 
 ipcMain.handle('list-sounds', () => {
   ensureSoundsDir();
-  const names = fs.readdirSync(SOUNDS_DIR).filter((n) =>
+  const soundsDir = getSoundsDir();
+  const names = fs.readdirSync(soundsDir).filter((n) =>
     /\.(mp3|wav|ogg|m4a|aac|flac)$/i.test(n)
   );
   return names;
 });
 
-// Fallback: load sound as ArrayBuffer for Blob URL playback (if protocol fails)
 ipcMain.handle('load-sound-buffer', (_, name) => {
-  const filePath = path.join(SOUNDS_DIR, name);
-  if (!path.resolve(filePath).startsWith(path.resolve(SOUNDS_DIR)) || !fs.existsSync(filePath)) {
+  const soundsDir = getSoundsDir();
+  const filePath = path.join(soundsDir, name);
+  if (!path.resolve(filePath).startsWith(path.resolve(soundsDir)) || !fs.existsSync(filePath)) {
     return null;
   }
   const buf = fs.readFileSync(filePath);
@@ -94,8 +102,9 @@ ipcMain.handle('load-sound-buffer', (_, name) => {
 });
 
 ipcMain.handle('remove-sound', (_, name) => {
-  const filePath = path.join(SOUNDS_DIR, name);
-  if (filePath.startsWith(SOUNDS_DIR) && fs.existsSync(filePath)) {
+  const soundsDir = getSoundsDir();
+  const filePath = path.join(soundsDir, name);
+  if (path.resolve(filePath).startsWith(path.resolve(soundsDir)) && fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
     return true;
   }
